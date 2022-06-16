@@ -5,4 +5,38 @@ date: '2022-06-15'
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, Load data and clean}
+
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(xlsx)
+library(dplyr)
+library(ggpubr)
+library(ggsci)
+library(rstatix)
+library (cowplot)
+
+#Load data
+All_data <- read_excel("FHS_Database_2020 Final.xlsx", sheet = 1)
+
+#Remove unwanted columns
+drops <- c("Visit","Intervention", "Comments")
+All_data <- All_data[ , !(names(All_data) %in% drops)]
+
+```
+
+``` {r, Split data}
+
+All_data_split <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG_%`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (umol/L)`<=11.2, "Low","High"))
+
+All_data_split_df<- as_tibble(All_data_split)
+
+```
+
+``` {r, tablulate!}
+
+All_data_split_df %>% group_by(`Liver fat`) %>% summarize(Age = median(Age), BMI = median(BMI))
+
+```
+
