@@ -64,12 +64,11 @@ Liver_fat_medians <- All_data_split_df %>%
     "GNG (mmol/L)" = median(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = median(`GLY (mmol/L)`,na.rm = TRUE))
 
-Liver_fat_medians <- pivot_longer(Liver_fat_medians[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Median")
+Liver_fat_medians <- as.data.frame(t(Liver_fat_medians[1:2,2:23])) %>% rename("Median High" = V1, "Median Low" = V2)%>%round(digits = 1)
 
 ```
+
+
 ``` {r, Ranges}
 
 Liver_fat_mins <- All_data_split_df %>% 
@@ -98,10 +97,7 @@ Liver_fat_mins <- All_data_split_df %>%
     "GNG (mmol/L)" = min(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = min(`GLY (mmol/L)`,na.rm = TRUE))
 
-Liver_fat_mins <- pivot_longer(Liver_fat_mins[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Minimum")
+Liver_fat_mins <- as.data.frame(t(Liver_fat_mins[1:2,2:23])) %>% rename("Mins High" = V1, "Mins Low" = V2) %>% round(digits = 1)
 
 Liver_fat_maxs <- All_data_split_df %>% 
   group_by(`Liver fat`) %>% 
@@ -129,28 +125,27 @@ Liver_fat_maxs <- All_data_split_df %>%
     "GNG (mmol/L)" = max(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = max(`GLY (mmol/L)`,na.rm = TRUE))
 
-Liver_fat_maxs <- pivot_longer(Liver_fat_maxs[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Maximum")
+Liver_fat_maxs <- as.data.frame(t(Liver_fat_maxs[1:2,2:23])) %>% rename("Maxs High" = V1, "Maxs Low" = V2) %>% round(digits = 1)
+
+
 
 ```
 ``` {R, tablulate!}
 
-Liver_fat_table <- Liver_fat_medians
-Liver_fat_table$Minimum <- Liver_fat_mins$Minimum
-Liver_fat_table$Maximum <- Liver_fat_maxs$Maximum
-Liver_fat_table <- Liver_fat_table[, c(2,1,3,4,5)]
+Liver_fat_table <- cbind(Liver_fat_medians, Liver_fat_mins, Liver_fat_maxs)
 
-Variables <- as_vector(Liver_fat_table[1:22,1])
+Liver_fat_table <- mutate(Liver_fat_table, "Low", "High")
 
-Liver_fat_table <- Liver_fat_table[order(Liver_fat_table$`Liver fat`, decreasing = TRUE),]
-Liver_fat_table <- Liver_fat_table[order(Liver_fat_table$`Variable`),]
+for(i in 1:nrow(Liver_fat_table)) {
+  Liver_fat_table[i,7] <- paste(Liver_fat_table[i,2], "(", Liver_fat_table[i,4], "-", Liver_fat_table[i,6], ")", sep = " ")
+  Liver_fat_table[i,8] <- paste(Liver_fat_table[i,1], "(", Liver_fat_table[i,3], "-", Liver_fat_table[i,5], ")", sep = " ")
+}
+
+Liver_fat_table <- Liver_fat_table[,7:8]
 
 Liver_fat_table
 
-write.xlsx(Liver_fat_table, "Tables.xlsx", sheetName = "Liver fat", 
-  col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(Liver_fat_table, "Tables.xlsx", sheetName = "Liver fat", col.names = TRUE, row.names = TRUE, append = FALSE)
 
 ```
 
@@ -182,10 +177,7 @@ Insulin_medians <- All_data_split_df %>%
     "GNG (mmol/L)" = median(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = median(`GLY (mmol/L)`,na.rm = TRUE))
 
-Insulin_medians <- pivot_longer(Insulin_medians[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Median")
+Insulin_medians <- as.data.frame(t(Insulin_medians[1:2,2:23])) %>% rename("Median High" = V1, "Median Low" = V2)%>%round(digits = 1)
 
 ```
 
@@ -217,10 +209,7 @@ Insulin_mins <- All_data_split_df %>%
     "GNG (mmol/L)" = min(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = min(`GLY (mmol/L)`,na.rm = TRUE))
 
-Insulin_mins <- pivot_longer(Insulin_mins[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Minimum")
+Insulin_mins <- as.data.frame(t(Insulin_mins[1:2,2:23])) %>% rename("Mins High" = V1, "Mins Low" = V2)%>%round(digits = 1)
 
 Insulin_maxs <- All_data_split_df %>% 
   group_by(`Insulin`) %>% 
@@ -248,28 +237,40 @@ Insulin_maxs <- All_data_split_df %>%
     "GNG (mmol/L)" = max(`GNG (mmol/L)`,na.rm = TRUE),
     "GLY (mmol/L)" = max(`GLY (mmol/L)`,na.rm = TRUE))
 
-Insulin_maxs <- pivot_longer(Insulin_maxs[1:2,],
-                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
-                                  names_to = "Variable",
-                                  values_to = "Maximum")
+
+Insulin_maxs <- as.data.frame(t(Insulin_maxs[1:2,2:23])) %>% rename("Maxs High" = V1, "Maxs Low" = V2)%>%round(digits = 1)
 
 ```
 
 ``` {R, tablulate!}
 
-Insulin_table <- Insulin_medians
-Insulin_table$Minimum <- Insulin_mins$Minimum
-Insulin_table$Maximum <- Insulin_maxs$Maximum
-Insulin_table <- Insulin_table[, c(2,1,3,4,5)]
+Insulin_table <- cbind(Insulin_medians, Insulin_mins, Insulin_maxs)
 
-Variables <- as_vector(Insulin_table[1:22,1])
+Insulin_table <- mutate(Insulin_table, "Low", "High")
 
-Insulin_table <- Insulin_table[order(Insulin_table$`Insulin`, decreasing = TRUE),]
-Insulin_table <- Insulin_table[order(Insulin_table$`Variable`),]
+for(i in 1:nrow(Insulin_table)) {
+  Insulin_table[i,7] <- paste(Insulin_table[i,2], "(", Insulin_table[i,4], "-", Insulin_table[i,6], ")", sep = " ")
+  Insulin_table[i,8] <- paste(Insulin_table[i,1], "(", Insulin_table[i,3], "-", Insulin_table[i,5], ")", sep = " ")
+}
+
+Insulin_table <- Insulin_table[,7:8]
 
 Insulin_table
 
-write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", 
-  col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+```
+
+``` {r}
+
+Liver_fat_counts <- All_data_split_df %>% 
+  group_by(`Liver fat`) %>% count(Sex)
+
+Insulin_counts <- All_data_split_df %>% 
+  group_by(`Insulin`) %>% count(Sex)
+
+Liver_fat_counts
+
+Insulin_counts
 
 ```
