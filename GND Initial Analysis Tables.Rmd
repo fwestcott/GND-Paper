@@ -28,15 +28,124 @@ All_data <- All_data[ , !(names(All_data) %in% drops)]
 
 ``` {r, Split data}
 
-All_data_split <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG_%`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (umol/L)`<=11.2, "Low","High"))
+All_data_split <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG (%)`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (nmol/L)`<=11.2, "Low","High"))
 
 All_data_split_df<- as_tibble(All_data_split)
+All_data_split_df
 
 ```
 
-``` {r, tablulate!}
+``` {r, Medians}
 
-All_data_split_df %>% group_by(`Liver fat`) %>% summarize(Age = median(Age), BMI = median(BMI))
+Liver_fat_medians <- All_data_split_df %>% 
+  group_by(`Liver fat`) %>% 
+  summarize(
+    "IHTG (%)" = median(`IHTG (%)`,na.rm = TRUE),
+    "Age" = median(`Age`, na.rm = TRUE), 
+    "Weight (kg)" = median(`Weight (kg)`, na.rm = TRUE),  
+    "BMI" = median(`BMI`, na.rm = TRUE), 
+    "Waist Circumference (cm)" = median(`Waist Circumference (cm)`, na.rm = TRUE), 
+    "Fat mass (%)" = median (`Fat mass (%)`, na.rm = TRUE), 
+    "Lean mass (%)" = median(`Lean mass (%)`,na.rm = TRUE), 
+    "Visceral fat mass (%)" = median(`Visceral fat mass (%)`,na.rm = TRUE),
+    "Glucose (mmol/L)" = median(`Glucose (mmol/L)`,na.rm = TRUE),
+    "Insulin (nmol/L)" = median(`Insulin (nmol/L)`,na.rm = TRUE),
+    "HOMA-IR" = median(`HOMA-IR`,na.rm = TRUE),
+    "NEFA (umol/L)" = median(`NEFA (umol/L)`,na.rm = TRUE),
+    "TAG (umol/L)" = median(`TAG (umol/L)`,na.rm = TRUE),
+    "3OHB (umol/L)" = median(`3OHB (umol/L)`,na.rm = TRUE),
+    "Total Cholesterol (mmol/L)" = median(`Total Cholesterol (mmol/L)`,na.rm = TRUE),
+    "HDL Cholesterol (mmol/L)" = median(`HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "Non-HDL Cholesterol (mmol/L)" = median(`Non-HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "DNL (%)" = median(`DNL (%)`,na.rm = TRUE),
+    "DNL (umol/L)" = median(`DNL (umol/L)`,na.rm = TRUE),
+    "frGNG (%)" = median(`frGNG (%)`,na.rm = TRUE),
+    "GNG (mmol/L)" = median(`GNG (mmol/L)`,na.rm = TRUE),
+    "GLY (mmol/L)" = median(`GLY (mmol/L)`,na.rm = TRUE))
+
+Liver_fat_medians <- pivot_longer(Liver_fat_medians[1:2,],
+                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
+                                  names_to = "Variable",
+                                  values_to = "Median")
 
 ```
+``` {r, Ranges}
 
+Liver_fat_mins <- All_data_split_df %>% 
+  group_by(`Liver fat`) %>% 
+  summarize(
+    "IHTG (%)" = min(`IHTG (%)`,na.rm = TRUE),
+    "Age" = min(`Age`, na.rm = TRUE), 
+    "Weight (kg)" = min(`Weight (kg)`, na.rm = TRUE),  
+    "BMI" = min(`BMI`, na.rm = TRUE), 
+    "Waist Circumference (cm)" = min(`Waist Circumference (cm)`, na.rm = TRUE), 
+    "Fat mass (%)" = min (`Fat mass (%)`, na.rm = TRUE), 
+    "Lean mass (%)" = min(`Lean mass (%)`,na.rm = TRUE), 
+    "Visceral fat mass (%)" = min(`Visceral fat mass (%)`,na.rm = TRUE),
+    "Glucose (mmol/L)" = min(`Glucose (mmol/L)`,na.rm = TRUE),
+    "Insulin (nmol/L)" = min(`Insulin (nmol/L)`,na.rm = TRUE),
+    "HOMA-IR" = min(`HOMA-IR`,na.rm = TRUE),
+    "NEFA (umol/L)" = min(`NEFA (umol/L)`,na.rm = TRUE),
+    "TAG (umol/L)" = min(`TAG (umol/L)`,na.rm = TRUE),
+    "3OHB (umol/L)" = min(`3OHB (umol/L)`,na.rm = TRUE),
+    "Total Cholesterol (mmol/L)" = min(`Total Cholesterol (mmol/L)`,na.rm = TRUE),
+    "HDL Cholesterol (mmol/L)" = min(`HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "Non-HDL Cholesterol (mmol/L)" = min(`Non-HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "DNL (%)" = min(`DNL (%)`,na.rm = TRUE),
+    "DNL (umol/L)" = min(`DNL (umol/L)`,na.rm = TRUE),
+    "frGNG (%)" = min(`frGNG (%)`,na.rm = TRUE),
+    "GNG (mmol/L)" = min(`GNG (mmol/L)`,na.rm = TRUE),
+    "GLY (mmol/L)" = min(`GLY (mmol/L)`,na.rm = TRUE))
+
+Liver_fat_mins <- pivot_longer(Liver_fat_mins[1:2,],
+                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
+                                  names_to = "Variable",
+                                  values_to = "Minimum")
+
+Liver_fat_maxs <- All_data_split_df %>% 
+  group_by(`Liver fat`) %>% 
+  summarize(
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
+    "Age" = max(`Age`, na.rm = TRUE), 
+    "Weight (kg)" = max(`Weight (kg)`, na.rm = TRUE),  
+    "BMI" = max(`BMI`, na.rm = TRUE), 
+    "Waist Circumference (cm)" = max(`Waist Circumference (cm)`, na.rm = TRUE), 
+    "Fat mass (%)" = max (`Fat mass (%)`, na.rm = TRUE), 
+    "Lean mass (%)" = max(`Lean mass (%)`,na.rm = TRUE), 
+    "Visceral fat mass (%)" = max(`Visceral fat mass (%)`,na.rm = TRUE),
+    "Glucose (mmol/L)" = max(`Glucose (mmol/L)`,na.rm = TRUE),
+    "Insulin (nmol/L)" = max(`Insulin (nmol/L)`,na.rm = TRUE),
+    "HOMA-IR" = max(`HOMA-IR`,na.rm = TRUE),
+    "NEFA (umol/L)" = max(`NEFA (umol/L)`,na.rm = TRUE),
+    "TAG (umol/L)" = max(`TAG (umol/L)`,na.rm = TRUE),
+    "3OHB (umol/L)" = max(`3OHB (umol/L)`,na.rm = TRUE),
+    "Total Cholesterol (mmol/L)" = max(`Total Cholesterol (mmol/L)`,na.rm = TRUE),
+    "HDL Cholesterol (mmol/L)" = max(`HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "Non-HDL Cholesterol (mmol/L)" = max(`Non-HDL Cholesterol (mmol/L)`,na.rm = TRUE),
+    "DNL (%)" = max(`DNL (%)`,na.rm = TRUE),
+    "DNL (umol/L)" = max(`DNL (umol/L)`,na.rm = TRUE),
+    "frGNG (%)" = max(`frGNG (%)`,na.rm = TRUE),
+    "GNG (mmol/L)" = max(`GNG (mmol/L)`,na.rm = TRUE),
+    "GLY (mmol/L)" = max(`GLY (mmol/L)`,na.rm = TRUE))
+
+Liver_fat_maxs <- pivot_longer(Liver_fat_maxs[1:2,],
+                                  cols = `IHTG (%)` : `GLY (mmol/L)`, 
+                                  names_to = "Variable",
+                                  values_to = "Maximum")
+
+```
+``` {R, tablulate!}
+
+Liver_fat_table <- Liver_fat_medians
+Liver_fat_table$Minimum <- Liver_fat_mins$Minimum
+Liver_fat_table$Maximum <- Liver_fat_maxs$Maximum
+Liver_fat_table <- Liver_fat_table[, c(2,1,3,4,5)]
+
+Variables <- as_vector(Liver_fat_table[1:22,1])
+
+Liver_fat_table <- Liver_fat_table[order(Liver_fat_table$`Liver fat`, decreasing = TRUE),]
+Liver_fat_table <- Liver_fat_table[order(Liver_fat_table$`Variable`),]
+
+Liver_fat_table
+
+```
