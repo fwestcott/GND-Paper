@@ -29,13 +29,13 @@ All_data <- All_data[ , !(names(All_data) %in% drops)]
 
 ``` {r, Split data}
 
-All_data_split_df <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG (%)`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (nmol/L)`<=11.2, "Low","High"))
+All_data_split_df <- mutate(All_data, "Liver_fat" = if_else(All_data$`IHTG (%)`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (nmol/L)`<=11.2, "Low","High"))
 
 ```
 ``` {r}
 
 Liver_fat_counts <- All_data_split_df %>% 
-  group_by(`Liver fat`) %>% count(Sex)
+  group_by(`Liver_fat`) %>% count(Sex)
 
 Insulin_counts <- All_data_split_df %>% 
   group_by(`Insulin`) %>% count(Sex)
@@ -50,9 +50,8 @@ Insulin_counts
 ``` {r, Medians}
 
 Liver_fat_medians <- All_data_split_df %>% 
-  group_by(`Liver fat`) %>% 
+  group_by(`Liver_fat`) %>% 
   summarize(
-    "IHTG (%)" = median(`IHTG (%)`,na.rm = TRUE),
     "Age" = median(`Age`, na.rm = TRUE), 
     "Weight (kg)" = median(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = median(`BMI`, na.rm = TRUE), 
@@ -61,6 +60,7 @@ Liver_fat_medians <- All_data_split_df %>%
     "Lean mass (%)" = median(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = median(`Visceral fat mass (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = median(`Glucose (mmol/L)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Insulin (nmol/L)" = median(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = median(`HOMA-IR`,na.rm = TRUE),
     "NEFA (umol/L)" = median(`NEFA (umol/L)`,na.rm = TRUE),
@@ -83,9 +83,8 @@ Liver_fat_medians <- as.data.frame(t(Liver_fat_medians[1:2,2:23])) %>% rename("M
 ``` {r, Ranges}
 
 Liver_fat_mins <- All_data_split_df %>% 
-  group_by(`Liver fat`) %>% 
+  group_by(`Liver_fat`) %>% 
   summarize(
-    "IHTG (%)" = min(`IHTG (%)`,na.rm = TRUE),
     "Age" = min(`Age`, na.rm = TRUE), 
     "Weight (kg)" = min(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = min(`BMI`, na.rm = TRUE), 
@@ -93,6 +92,7 @@ Liver_fat_mins <- All_data_split_df %>%
     "Fat mass (%)" = min (`Fat mass (%)`, na.rm = TRUE), 
     "Lean mass (%)" = min(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = min(`Visceral fat mass (%)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = min(`Glucose (mmol/L)`,na.rm = TRUE),
     "Insulin (nmol/L)" = min(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = min(`HOMA-IR`,na.rm = TRUE),
@@ -111,9 +111,8 @@ Liver_fat_mins <- All_data_split_df %>%
 Liver_fat_mins <- as.data.frame(t(Liver_fat_mins[1:2,2:23])) %>% rename("Mins High" = V1, "Mins Low" = V2) %>% round(digits = 1)
 
 Liver_fat_maxs <- All_data_split_df %>% 
-  group_by(`Liver fat`) %>% 
+  group_by(`Liver_fat`) %>% 
   summarize(
-    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Age" = max(`Age`, na.rm = TRUE), 
     "Weight (kg)" = max(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = max(`BMI`, na.rm = TRUE), 
@@ -121,6 +120,7 @@ Liver_fat_maxs <- All_data_split_df %>%
     "Fat mass (%)" = max (`Fat mass (%)`, na.rm = TRUE), 
     "Lean mass (%)" = max(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = max(`Visceral fat mass (%)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = max(`Glucose (mmol/L)`,na.rm = TRUE),
     "Insulin (nmol/L)" = max(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = max(`HOMA-IR`,na.rm = TRUE),
@@ -141,31 +141,12 @@ Liver_fat_maxs <- as.data.frame(t(Liver_fat_maxs[1:2,2:23])) %>% rename("Maxs Hi
 
 
 ```
-``` {R, tablulate!}
-
-Liver_fat_table <- cbind(Liver_fat_medians, Liver_fat_mins, Liver_fat_maxs)
-
-Liver_fat_table <- mutate(Liver_fat_table, "Low", "High")
-
-for(i in 1:nrow(Liver_fat_table)) {
-  Liver_fat_table[i,7] <- paste(Liver_fat_table[i,2], "(", Liver_fat_table[i,4], "-", Liver_fat_table[i,6], ")", sep = " ")
-  Liver_fat_table[i,8] <- paste(Liver_fat_table[i,1], "(", Liver_fat_table[i,3], "-", Liver_fat_table[i,5], ")", sep = " ")
-}
-
-Liver_fat_table <- Liver_fat_table[,7:8]
-
-Liver_fat_table
-
-write.xlsx(Liver_fat_table, "Tables.xlsx", sheetName = "Liver fat", col.names = TRUE, row.names = TRUE, append = FALSE)
-
-```
 
 ``` {r, Medians}
 
 Insulin_medians <- All_data_split_df %>% 
   group_by(`Insulin`) %>% 
   summarize(
-    "IHTG (%)" = median(`IHTG (%)`,na.rm = TRUE),
     "Age" = median(`Age`, na.rm = TRUE), 
     "Weight (kg)" = median(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = median(`BMI`, na.rm = TRUE), 
@@ -173,6 +154,7 @@ Insulin_medians <- All_data_split_df %>%
     "Fat mass (%)" = median (`Fat mass (%)`, na.rm = TRUE), 
     "Lean mass (%)" = median(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = median(`Visceral fat mass (%)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = median(`Glucose (mmol/L)`,na.rm = TRUE),
     "Insulin (nmol/L)" = median(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = median(`HOMA-IR`,na.rm = TRUE),
@@ -197,7 +179,6 @@ Insulin_medians <- as.data.frame(t(Insulin_medians[1:2,2:23])) %>% rename("Media
 Insulin_mins <- All_data_split_df %>% 
   group_by(`Insulin`) %>% 
   summarize(
-    "IHTG (%)" = min(`IHTG (%)`,na.rm = TRUE),
     "Age" = min(`Age`, na.rm = TRUE), 
     "Weight (kg)" = min(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = min(`BMI`, na.rm = TRUE), 
@@ -205,6 +186,7 @@ Insulin_mins <- All_data_split_df %>%
     "Fat mass (%)" = min (`Fat mass (%)`, na.rm = TRUE), 
     "Lean mass (%)" = min(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = min(`Visceral fat mass (%)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = min(`Glucose (mmol/L)`,na.rm = TRUE),
     "Insulin (nmol/L)" = min(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = min(`HOMA-IR`,na.rm = TRUE),
@@ -225,7 +207,6 @@ Insulin_mins <- as.data.frame(t(Insulin_mins[1:2,2:23])) %>% rename("Mins High" 
 Insulin_maxs <- All_data_split_df %>% 
   group_by(`Insulin`) %>% 
   summarize(
-    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Age" = max(`Age`, na.rm = TRUE), 
     "Weight (kg)" = max(`Weight (kg)`, na.rm = TRUE),  
     "BMI" = max(`BMI`, na.rm = TRUE), 
@@ -233,6 +214,7 @@ Insulin_maxs <- All_data_split_df %>%
     "Fat mass (%)" = max (`Fat mass (%)`, na.rm = TRUE), 
     "Lean mass (%)" = max(`Lean mass (%)`,na.rm = TRUE), 
     "Visceral fat mass (%)" = max(`Visceral fat mass (%)`,na.rm = TRUE),
+    "IHTG (%)" = max(`IHTG (%)`,na.rm = TRUE),
     "Glucose (mmol/L)" = max(`Glucose (mmol/L)`,na.rm = TRUE),
     "Insulin (nmol/L)" = max(`Insulin (nmol/L)`,na.rm = TRUE),
     "HOMA-IR" = max(`HOMA-IR`,na.rm = TRUE),
@@ -253,24 +235,6 @@ Insulin_maxs <- as.data.frame(t(Insulin_maxs[1:2,2:23])) %>% rename("Maxs High" 
 
 ```
 
-``` {R, tablulate!}
-
-Insulin_table <- cbind(Insulin_medians, Insulin_mins, Insulin_maxs)
-
-Insulin_table <- mutate(Insulin_table, "Low", "High")
-
-for(i in 1:nrow(Insulin_table)) {
-  Insulin_table[i,7] <- paste(Insulin_table[i,2], "(", Insulin_table[i,4], "-", Insulin_table[i,6], ")", sep = " ")
-  Insulin_table[i,8] <- paste(Insulin_table[i,1], "(", Insulin_table[i,3], "-", Insulin_table[i,5], ")", sep = " ")
-}
-
-Insulin_table <- Insulin_table[,7:8]
-
-Insulin_table
-
-write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", col.names = TRUE, row.names = TRUE, append = TRUE)
-
-```
 ``` {R, QQ Plots}
 
 
@@ -299,6 +263,7 @@ ggqqplot(All_data$`GLY (mmol/L)`)
 
 
 ```
+
 ``` {r}
 
 shapiro.test(All_data$Age)
@@ -327,26 +292,73 @@ shapiro.test(All_data$`GLY (mmol/L)`)
 #All significantly non-normally distributed except for Age, Fat mass and Lean mass!!
 
 ```
+
 ``` {r, non-parametric T testing (Mann-whitney U)}
 
-Keepers <- c("Liver fat", "Insulin", row.names(Liver_fat_table))
+Keepers <- c("Liver_fat", "Insulin", row.names(Liver_fat_table))
 
 All_data_split_filtered <- All_data_split_df[ , (names(All_data_split_df) %in% Keepers)]
 
 All_data_split_filtered <- All_data_split_filtered[, c(23, 24, 1:22)]
 
-All_data_split_filtered
+Results <- as.data.frame(Keepers, row.names = Keepers)
 
 
 for (i in 3:ncol(All_data_split_filtered)) {
-   formula <- as.formula(paste("`", colnames(All_data_split_filtered)[i], "`", " ~ Insulin", sep=""))
-   model <- wilcox.test(formula, data = All_data_split_filtered,
-                   exact = FALSE)
+   formula <- as.formula(paste("`", colnames(All_data_split_filtered)[i], "`", " ~ Liver_fat", sep=""))
+   model <- wilcox_test(data = All_data_split_filtered, formula, exact = FALSE) %>% add_significance()
 
-   cat("\n-----\n\n")
-   cat(colnames(All_data_split_filtered)[i])
-   cat("\n")
-   print(model)
+   Results[i,1] <- paste(model$p.adj.signif)
+
 }
+
+for (i in 3:ncol(All_data_split_filtered)) {
+   formula <- as.formula(paste("`", colnames(All_data_split_filtered)[i], "`", " ~ Insulin", sep=""))
+   model <- wilcox_test(data = All_data_split_filtered, formula, exact = FALSE) %>% add_significance()
+
+   Results[i,2] <- paste(model$p.adj.signif)
+
+}
+
+
+Results <- Results[3:24,] %>% rename("Liver fat P-value" = Keepers, "Insulin P-value" = V2)
+
+
+```
+
+``` {R, Tablulate!}
+Liver_fat_table <- cbind(Liver_fat_medians, Liver_fat_mins, Liver_fat_maxs, Results)
+
+Liver_fat_table <- mutate(Liver_fat_table, "Low (<= 5.56%)", "High (> 5.56%)")
+
+for(i in 1:nrow(Liver_fat_table)) {
+  Liver_fat_table[i,9] <- paste(Liver_fat_table[i,2], "(", Liver_fat_table[i,4], "-", Liver_fat_table[i,6], ")", sep = " ")
+  Liver_fat_table[i,10] <- paste(Liver_fat_table[i,1], "(", Liver_fat_table[i,3], "-", Liver_fat_table[i,5], ")", Liver_fat_table[i,7], sep = " ")
+}
+
+Liver_fat_table <- Liver_fat_table[,9:10]
+
+Liver_fat_table
+
+write.xlsx(Liver_fat_table, "Tables.xlsx", sheetName = "Liver fat", col.names = TRUE, row.names = TRUE, append = FALSE)
+```
+
+``` {R, Tablulate!}
+
+Insulin_table <- cbind(Insulin_medians, Insulin_mins, Insulin_maxs, Results)
+
+Insulin_table <- mutate(Insulin_table, "Low (<=11.2nmol/L)", "High (>11.2nmol/L)")
+
+for(i in 1:nrow(Insulin_table)) {
+  Insulin_table[i,9] <- paste(Insulin_table[i,2], "(", Insulin_table[i,4], "-", Insulin_table[i,6], ")", sep = " ")
+  Insulin_table[i,10] <- paste(Insulin_table[i,1], "(", Insulin_table[i,3], "-", Insulin_table[i,5], ")", Insulin_table[i,8], sep = " ")
+}
+
+Insulin_table <- Insulin_table[,9:10]
+
+Insulin_table
+
+write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", col.names = TRUE, row.names = TRUE, append = TRUE)
+
 
 ```
