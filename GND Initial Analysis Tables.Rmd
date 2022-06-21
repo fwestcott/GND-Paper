@@ -29,10 +29,7 @@ All_data <- All_data[ , !(names(All_data) %in% drops)]
 
 ``` {r, Split data}
 
-All_data_split <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG (%)`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (nmol/L)`<=11.2, "Low","High"))
-
-All_data_split_df<- as_tibble(All_data_split)
-All_data_split_df
+All_data_split_df <- mutate(All_data, "Liver fat" = if_else(All_data$`IHTG (%)`<=5.56, "Low","High"), "Insulin" = if_else(All_data$`Insulin (nmol/L)`<=11.2, "Low","High"))
 
 ```
 ``` {r}
@@ -276,62 +273,80 @@ write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", col.names = TRUE
 ```
 ``` {R, QQ Plots}
 
-Keepers <- as.vector(row.names(Liver_fat_table))
-All_data_filtered <- All_data[ , (names(All_data) %in% Keepers)]
-All_data_filtered
 
-
-ggqqplot(All_data_filtered$Age)
-ggqqplot(All_data_filtered$`Weight (kg)`)
-ggqqplot(All_data_filtered$BMI)
-ggqqplot(All_data_filtered$`Waist Circumference (cm)`)
-ggqqplot(All_data_filtered$`Fat mass (%)`)
-ggqqplot(All_data_filtered$`Lean mass (%)`)
-ggqqplot(All_data_filtered$`Visceral fat mass (%)`)
-ggqqplot(All_data_filtered$`IHTG (%)`)
-ggqqplot(All_data_filtered$`Glucose (mmol/L)`)
-ggqqplot(All_data_filtered$`Insulin (nmol/L)`)
-ggqqplot(All_data_filtered$`HOMA-IR`)
-ggqqplot(All_data_filtered$`NEFA (umol/L)`)
-ggqqplot(All_data_filtered$`TAG (umol/L)`)
-ggqqplot(All_data_filtered$`3OHB (umol/L)`)
-ggqqplot(All_data_filtered$`Total Cholesterol (mmol/L)`)
-ggqqplot(All_data_filtered$`HDL Cholesterol (mmol/L)`)
-ggqqplot(All_data_filtered$`Non-HDL Cholesterol (mmol/L)`)
-ggqqplot(All_data_filtered$`DNL (%)`)
-ggqqplot(All_data_filtered$`DNL (umol/L)`)
-ggqqplot(All_data_filtered$`frGNG (%)`)
-ggqqplot(All_data_filtered$`GNG (mmol/L)`)
-ggqqplot(All_data_filtered$`GLY (mmol/L)`)
+ggqqplot(All_data$Age)
+ggqqplot(All_data$`Weight (kg)`)
+ggqqplot(All_data$BMI)
+ggqqplot(All_data$`Waist Circumference (cm)`)
+ggqqplot(All_data$`Fat mass (%)`)
+ggqqplot(All_data$`Lean mass (%)`)
+ggqqplot(All_data$`Visceral fat mass (%)`)
+ggqqplot(All_data$`IHTG (%)`)
+ggqqplot(All_data$`Glucose (mmol/L)`)
+ggqqplot(All_data$`Insulin (nmol/L)`)
+ggqqplot(All_data$`HOMA-IR`)
+ggqqplot(All_data$`NEFA (umol/L)`)
+ggqqplot(All_data$`TAG (umol/L)`)
+ggqqplot(All_data$`3OHB (umol/L)`)
+ggqqplot(All_data$`Total Cholesterol (mmol/L)`)
+ggqqplot(All_data$`HDL Cholesterol (mmol/L)`)
+ggqqplot(All_data$`Non-HDL Cholesterol (mmol/L)`)
+ggqqplot(All_data$`DNL (%)`)
+ggqqplot(All_data$`DNL (umol/L)`)
+ggqqplot(All_data$`frGNG (%)`)
+ggqqplot(All_data$`GNG (mmol/L)`)
+ggqqplot(All_data$`GLY (mmol/L)`)
 
 
 ```
 ``` {r}
 
-shapiro.test(All_data_filtered$Age)
-shapiro.test(All_data_filtered$`Weight (kg)`)
-shapiro.test(All_data_filtered$BMI)
-shapiro.test(All_data_filtered$`Waist Circumference (cm)`)
-shapiro.test(All_data_filtered$`Fat mass (%)`)
-shapiro.test(All_data_filtered$`Lean mass (%)`)
-shapiro.test(All_data_filtered$`Visceral fat mass (%)`)
-shapiro.test(All_data_filtered$`IHTG (%)`)
-shapiro.test(All_data_filtered$`Glucose (mmol/L)`)
-shapiro.test(All_data_filtered$`Insulin (nmol/L)`)
-shapiro.test(All_data_filtered$`HOMA-IR`)
-shapiro.test(All_data_filtered$`NEFA (umol/L)`)
-shapiro.test(All_data_filtered$`TAG (umol/L)`)
-shapiro.test(All_data_filtered$`3OHB (umol/L)`)
-shapiro.test(All_data_filtered$`Total Cholesterol (mmol/L)`)
-shapiro.test(All_data_filtered$`HDL Cholesterol (mmol/L)`)
-shapiro.test(All_data_filtered$`Non-HDL Cholesterol (mmol/L)`)
-shapiro.test(All_data_filtered$`DNL (%)`)
-shapiro.test(All_data_filtered$`DNL (umol/L)`)
-shapiro.test(All_data_filtered$`frGNG (%)`)
-shapiro.test(All_data_filtered$`GNG (mmol/L)`)
-shapiro.test(All_data_filtered$`GLY (mmol/L)`)
+shapiro.test(All_data$Age)
+shapiro.test(All_data$`Weight (kg)`)
+shapiro.test(All_data$BMI)
+shapiro.test(All_data$`Waist Circumference (cm)`)
+shapiro.test(All_data$`Fat mass (%)`)
+shapiro.test(All_data$`Lean mass (%)`)
+shapiro.test(All_data$`Visceral fat mass (%)`)
+shapiro.test(All_data$`IHTG (%)`)
+shapiro.test(All_data$`Glucose (mmol/L)`)
+shapiro.test(All_data$`Insulin (nmol/L)`)
+shapiro.test(All_data$`HOMA-IR`)
+shapiro.test(All_data$`NEFA (umol/L)`)
+shapiro.test(All_data$`TAG (umol/L)`)
+shapiro.test(All_data$`3OHB (umol/L)`)
+shapiro.test(All_data$`Total Cholesterol (mmol/L)`)
+shapiro.test(All_data$`HDL Cholesterol (mmol/L)`)
+shapiro.test(All_data$`Non-HDL Cholesterol (mmol/L)`)
+shapiro.test(All_data$`DNL (%)`)
+shapiro.test(All_data$`DNL (umol/L)`)
+shapiro.test(All_data$`frGNG (%)`)
+shapiro.test(All_data$`GNG (mmol/L)`)
+shapiro.test(All_data$`GLY (mmol/L)`)
 
 #All significantly non-normally distributed except for Age, Fat mass and Lean mass!!
 
 ```
+``` {r, non-parametric T testing (Mann-whitney U)}
 
+Keepers <- c("Liver fat", "Insulin", row.names(Liver_fat_table))
+
+All_data_split_filtered <- All_data_split_df[ , (names(All_data_split_df) %in% Keepers)]
+
+All_data_split_filtered <- All_data_split_filtered[, c(23, 24, 1:22)]
+
+All_data_split_filtered
+
+
+for (i in 3:ncol(All_data_split_filtered)) {
+   formula <- as.formula(paste("`", colnames(All_data_split_filtered)[i], "`", " ~ Insulin", sep=""))
+   model <- wilcox.test(formula, data = All_data_split_filtered,
+                   exact = FALSE)
+
+   cat("\n-----\n\n")
+   cat(colnames(All_data_split_filtered)[i])
+   cat("\n")
+   print(model)
+}
+
+```
