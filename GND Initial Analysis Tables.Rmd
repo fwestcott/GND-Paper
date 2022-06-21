@@ -35,6 +35,20 @@ All_data_split_df<- as_tibble(All_data_split)
 All_data_split_df
 
 ```
+``` {r}
+
+Liver_fat_counts <- All_data_split_df %>% 
+  group_by(`Liver fat`) %>% count(Sex)
+
+Insulin_counts <- All_data_split_df %>% 
+  group_by(`Insulin`) %>% count(Sex)
+
+Liver_fat_counts
+
+Insulin_counts
+
+```
+
 
 ``` {r, Medians}
 
@@ -260,17 +274,64 @@ Insulin_table
 write.xlsx(Insulin_table, "Tables.xlsx", sheetName = "Insulin", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 ```
+``` {R, QQ Plots}
 
-``` {r}
+Keepers <- as.vector(row.names(Liver_fat_table))
+All_data_filtered <- All_data[ , (names(All_data) %in% Keepers)]
+All_data_filtered
 
-Liver_fat_counts <- All_data_split_df %>% 
-  group_by(`Liver fat`) %>% count(Sex)
 
-Insulin_counts <- All_data_split_df %>% 
-  group_by(`Insulin`) %>% count(Sex)
+ggqqplot(All_data_filtered$Age)
+ggqqplot(All_data_filtered$`Weight (kg)`)
+ggqqplot(All_data_filtered$BMI)
+ggqqplot(All_data_filtered$`Waist Circumference (cm)`)
+ggqqplot(All_data_filtered$`Fat mass (%)`)
+ggqqplot(All_data_filtered$`Lean mass (%)`)
+ggqqplot(All_data_filtered$`Visceral fat mass (%)`)
+ggqqplot(All_data_filtered$`IHTG (%)`)
+ggqqplot(All_data_filtered$`Glucose (mmol/L)`)
+ggqqplot(All_data_filtered$`Insulin (nmol/L)`)
+ggqqplot(All_data_filtered$`HOMA-IR`)
+ggqqplot(All_data_filtered$`NEFA (umol/L)`)
+ggqqplot(All_data_filtered$`TAG (umol/L)`)
+ggqqplot(All_data_filtered$`3OHB (umol/L)`)
+ggqqplot(All_data_filtered$`Total Cholesterol (mmol/L)`)
+ggqqplot(All_data_filtered$`HDL Cholesterol (mmol/L)`)
+ggqqplot(All_data_filtered$`Non-HDL Cholesterol (mmol/L)`)
+ggqqplot(All_data_filtered$`DNL (%)`)
+ggqqplot(All_data_filtered$`DNL (umol/L)`)
+ggqqplot(All_data_filtered$`frGNG (%)`)
+ggqqplot(All_data_filtered$`GNG (mmol/L)`)
+ggqqplot(All_data_filtered$`GLY (mmol/L)`)
 
-Liver_fat_counts
-
-Insulin_counts
 
 ```
+``` {r}
+
+shapiro.test(All_data_filtered$Age)
+shapiro.test(All_data_filtered$`Weight (kg)`)
+shapiro.test(All_data_filtered$BMI)
+shapiro.test(All_data_filtered$`Waist Circumference (cm)`)
+shapiro.test(All_data_filtered$`Fat mass (%)`)
+shapiro.test(All_data_filtered$`Lean mass (%)`)
+shapiro.test(All_data_filtered$`Visceral fat mass (%)`)
+shapiro.test(All_data_filtered$`IHTG (%)`)
+shapiro.test(All_data_filtered$`Glucose (mmol/L)`)
+shapiro.test(All_data_filtered$`Insulin (nmol/L)`)
+shapiro.test(All_data_filtered$`HOMA-IR`)
+shapiro.test(All_data_filtered$`NEFA (umol/L)`)
+shapiro.test(All_data_filtered$`TAG (umol/L)`)
+shapiro.test(All_data_filtered$`3OHB (umol/L)`)
+shapiro.test(All_data_filtered$`Total Cholesterol (mmol/L)`)
+shapiro.test(All_data_filtered$`HDL Cholesterol (mmol/L)`)
+shapiro.test(All_data_filtered$`Non-HDL Cholesterol (mmol/L)`)
+shapiro.test(All_data_filtered$`DNL (%)`)
+shapiro.test(All_data_filtered$`DNL (umol/L)`)
+shapiro.test(All_data_filtered$`frGNG (%)`)
+shapiro.test(All_data_filtered$`GNG (mmol/L)`)
+shapiro.test(All_data_filtered$`GLY (mmol/L)`)
+
+#All significantly non-normally distributed except for Age, Fat mass and Lean mass!!
+
+```
+
