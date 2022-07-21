@@ -295,7 +295,7 @@ shapiro.test(All_data$`GLY (mmol/L)`)
 
 ``` {r, non-parametric T testing (Mann-whitney U)}
 
-Keepers <- c("Liver_fat", "Insulin", row.names(Liver_fat_table))
+Keepers <- c("Liver_fat", "Insulin", row.names(Liver_fat_medians))
 
 All_data_split_filtered <- All_data_split_df[ , (names(All_data_split_df) %in% Keepers)]
 
